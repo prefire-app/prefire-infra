@@ -1,0 +1,8 @@
+*.tif
+
+# CDK build output
+cdk.out/
+
+# Python
+__pycache__/
+*.pyc
