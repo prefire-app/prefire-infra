@@ -38,6 +38,12 @@ class PrefireStack(Stack):
         cog_bucket.grant_read(fn)
         output_bucket.grant_read_write(fn)  # write subset, then sign the URL
 
-        api = apigw.LambdaRestApi(self, "CogApi", handler=fn)
+        api = apigw.LambdaRestApi(self, "CogApi", handler=fn,
+            deploy_options=apigw.StageOptions(stage_name=env),
+            default_cors_preflight_options=apigw.CorsOptions(
+                allow_origins=apigw.Cors.ALL_ORIGINS,
+                allow_methods=apigw.Cors.ALL_METHODS,
+            )
+        )
 
         CfnOutput(self, "ApiUrl", value=api.url, description="API Gateway endpoint URL")

@@ -51,14 +51,14 @@ def handler(event, context):
     fips = params.get("fips")
 
     if not bbox_str or not fips:
-        return {"statusCode": 400, "body": json.dumps({"error": "bbox and county fips are required"})}
+        return {"statusCode": 400, "headers": {"Access-Control-Allow-Origin": "*"}, "body": json.dumps({"error": "bbox and county fips are required"})}
 
     minx, miny, maxx, maxy = map(float, bbox_str.split(","))
 
     # find object
     key = _find_key(fips)
     if not key:
-        return {"statusCode": 404, "body": json.dumps({"error": f"No COG found for FIPS {fips}"})}
+        return {"statusCode": 404, "headers": {"Access-Control-Allow-Origin": "*"}, "body": json.dumps({"error": f"No COG found for FIPS {fips}"})}
 
     aws_session = AWSSession(boto3.Session())
     with rasterio.Env(aws_session, GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", VSI_CACHE=True):
@@ -67,7 +67,7 @@ def handler(event, context):
             try:
                 window = window.intersection(Window(0, 0, src.width, src.height))
             except WindowError:
-                return {"statusCode": 400, "body": json.dumps({
+                return {"statusCode": 400, "headers": {"Access-Control-Allow-Origin": "*"}, "body": json.dumps({
                     "error": f"bbox does not overlap COG extent {tuple(src.bounds)}"
                 })}
             data = src.read(window=window)
@@ -97,6 +97,6 @@ def handler(event, context):
 
     return {
         "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
         "body": json.dumps({"url": url, "expires_in": URL_EXPIRY, "key": output_key}),
     }
