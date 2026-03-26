@@ -10,11 +10,15 @@ os.environ["OUTPUT_BUCKET"] = "prefire-dev-output"
 
 from api import handler
 
+# Small polygon in San Mateo county (WGS84)
 event = {
-    "queryStringParameters": {
+    "body": json.dumps({
         "fips": "081",
-        "bbox": "560686,4140115,560786,4140215"
-    }
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-122.42, 37.55], [-122.42, 37.551], [-122.419, 37.551], [-122.419, 37.55], [-122.42, 37.55]]]
+        }
+    })
 }
 
 result = handler(event, {})
@@ -26,7 +30,6 @@ if result["statusCode"] == 200:
     print("Expires in:   ", body["expires_in"], "seconds")
     print("Presigned URL:", body["url"])
 
-    # Fetch the file directly from S3 using the presigned URL
     response = requests.get(body["url"])
     response.raise_for_status()
 

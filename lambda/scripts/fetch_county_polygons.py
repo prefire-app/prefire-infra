@@ -1,5 +1,5 @@
 # scripts/fetch_county_polygons.py
-# Reads a local California counties shapefile, reprojects to EPSG:3857,
+# Reads a local California counties shapefile, reprojects to EPSG:26910,
 # filters to the target counties, simplifies, and writes county_polygons.json.
 #
 # Usage:
