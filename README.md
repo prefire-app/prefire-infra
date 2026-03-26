@@ -12,3 +12,9 @@ Deployment code for the API COG retriever lambda
 
 Docker desktop needs to be open
 `cdk deploy --context env=dev`
+
+## Testing
+
+### Integration test
+
+`python test/aws_test.py`
